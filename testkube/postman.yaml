@@ -1,0 +1,28 @@
+kind: TestWorkflow
+apiVersion: testworkflows.testkube.io/v1
+metadata:
+  name: postman-sample
+  namespace: testkube
+  labels:
+    docs: example
+spec:
+  content:
+    git:
+      uri: https://github.com/cristinamudura/testkube-demo
+      revision: main
+      paths:
+      - postman/testkube.postman_collection.json
+  container:
+    workingDir: /data/repo/postman
+    resources:
+      requests:
+        cpu: 256m
+        memory: 128Mi
+  steps:
+  - name: Run test
+    run:
+      image: postman/newman:6-alpine
+      args:
+      - run
+      - testkube.postman_collection.json
+status: {}

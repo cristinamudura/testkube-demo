@@ -1,0 +1,26 @@
+kind: TestWorkflow
+apiVersion: testworkflows.testkube.io/v1
+metadata:
+  name: jmeter-sample
+  namespace: testkube
+  labels:
+    docs: example
+spec:
+  content:
+    git:
+      uri: https://github.com/cristinamudura/testkube-demo
+      revision: main
+      paths:
+      - jmeter/Jmeter-TestKube.jmx
+  container:
+    workingDir: /data/repo/jmeter
+  steps:
+  - name: Run tests
+    container:
+      image: alpine/jmeter:5.6
+    shell: jmeter -n -t Jmeter-TestKube.jmx -j /data/artifacts/jmeter.log -o /data/artifacts/report
+      -l /data/artifacts/jtl-report.jtl -e
+    artifacts:
+      paths:
+      - /data/artifacts/**/*
+status: {}

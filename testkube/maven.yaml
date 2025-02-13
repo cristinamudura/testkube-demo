@@ -1,0 +1,34 @@
+kind: TestWorkflow
+apiVersion: testworkflows.testkube.io/v1
+metadata:
+  name: maven-sample
+  namespace: testkube
+  labels:
+    docs: example
+spec:
+  content:
+    git:
+      uri: https://github.com/cristinamudura/testkube-demo
+      revision: main
+      paths:
+      - karate/karate-template
+  container:
+    workingDir: /data/repo/karate/karate-template
+    resources:
+      requests:
+        cpu: 256m
+        memory: 256Mi
+  steps:
+  - name: Run tests
+    run:
+      image: maven:3.9.6-eclipse-temurin-17
+      env:
+      - name: TESTKUBE_MAVEN
+        value: "true"
+      shell: |
+        mvn test
+        mvn surefire-report:report
+    artifacts:
+      paths:
+      - target/reports/**/*
+status: {}
