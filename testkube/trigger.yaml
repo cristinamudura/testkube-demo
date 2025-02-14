@@ -1,0 +1,22 @@
+apiVersion: tests.testkube.io/v1
+kind: TestTrigger
+metadata:
+  name: deployment-image-update-trigger
+  namespace: testkube
+spec:
+  resource: deployment
+  resourceSelector:
+    name: elsa-server
+    namespace: my-demo-namespace
+  event: deployment-image-update
+  conditionSpec:
+    timeout: 100
+    delay: 2
+    conditions:
+    - type: Available
+      status: True
+  action: run
+  execution: testworkflow
+  testSelector:
+    name: postman-sample
+    namespace: testkube
